@@ -1,5 +1,5 @@
-import { IsValidDate } from '../../../domain/usecases/IsValidDate';
-import { RegistrationError } from '../../../domain/entities/RegistrationError';
+import { IsValidDate } from '../../../src/domain/usecases/IsValidDate';
+import { RegistrationError } from '../../../src/domain/entities/RegistrationError';
 
 describe('IsValidDate', () => {
     let isValidDate: IsValidDate;

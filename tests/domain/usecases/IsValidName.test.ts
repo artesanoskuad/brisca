@@ -1,4 +1,4 @@
-import { IsValidName } from '../../../domain/usecases/IsValidName';
+import { IsValidName } from '../../../src/domain/usecases/IsValidName';
 
 describe('IsValidName', () => {
     let isValidName: IsValidName;

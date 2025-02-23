@@ -1,5 +1,5 @@
-import { CategorizeUser } from '../../../domain/usecases/CategorizeUser';
-import { PerfilUsuario } from '../../../domain/entities/PerfilUsuario';
+import { CategorizeUser } from '../../../src/domain/usecases/CategorizeUser';
+import { PerfilUsuario } from '../../../src/domain/entities/PerfilUsuario';
 
 describe('CategorizeUser', () => {
     let categorizeUser: CategorizeUser;

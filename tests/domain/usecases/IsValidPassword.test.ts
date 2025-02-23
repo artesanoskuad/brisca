@@ -1,5 +1,5 @@
-import { IsValidPassword } from '../../../domain/usecases/IsValidPassword';
-import { RegistrationError } from '../../../domain/entities/RegistrationError';
+import { IsValidPassword } from '../../../src/domain/usecases/IsValidPassword';
+import { RegistrationError } from '../../../src/domain/entities/RegistrationError';
 
 describe('IsValidPassword', () => {
     let isValidPassword: IsValidPassword;

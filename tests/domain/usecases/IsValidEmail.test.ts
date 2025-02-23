@@ -1,6 +1,6 @@
 // tests/domain/usecases/IsValidEmail.test.ts
-import { IsValidEmail } from '../../../domain/usecases/IsValidEmail';
-import { RegistrationError } from '../../../domain/entities/RegistrationError';
+import { IsValidEmail } from '../../../src/domain/usecases/IsValidEmail';
+import { RegistrationError } from '../../../src/domain/entities/RegistrationError';
 
 describe('IsValidEmail', () => {
     let isValidEmail: IsValidEmail;

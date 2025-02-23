@@ -1,5 +1,5 @@
-import { AcceptTermsAndConditions } from '../../../domain/usecases/AcceptTermsAndConditions';
-import { RegistrationError } from '../../../domain/entities/RegistrationError';
+import { AcceptTermsAndConditions } from '../../../src/domain/usecases/AcceptTermsAndConditions';
+import { RegistrationError } from '../../../src/domain/entities/RegistrationError';
 
 describe('AcceptTermsAndConditions', () => {
     let acceptTermsAndConditions: AcceptTermsAndConditions;

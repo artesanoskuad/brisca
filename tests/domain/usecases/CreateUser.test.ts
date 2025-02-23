@@ -1,16 +1,16 @@
 // tests/domain/usecases/CrearUsuario.test.ts
-import { CreateUser } from '../../../domain/usecases/CreateUser';
-import { Usuario } from '../../../domain/entities/Usuario';
-import { UsuarioRepository } from '../../../domain/repositories/UsuarioRepository';
-import { CredencialRepository } from '../../../domain/repositories/CredencialRepository';
-import { IsValidName } from '../../../domain/usecases/IsValidName';
-import { IsValidEmail } from '../../../domain/usecases/IsValidEmail';
-import { IsValidDate } from '../../../domain/usecases/IsValidDate';
-import { IsValidPassword } from '../../../domain/usecases/IsValidPassword';
-import { AcceptTermsAndConditions } from '../../../domain/usecases/AcceptTermsAndConditions';
-import { CategorizeUser } from '../../../domain/usecases/CategorizeUser';
-import { RegistrationError } from '../../../domain/entities/RegistrationError';
-import { PerfilUsuario } from '../../../domain/entities/PerfilUsuario';
+import { CreateUser } from '../../../src/domain/usecases/CreateUser';
+import { Usuario } from '../../../src/domain/entities/Usuario';
+import { UsuarioRepository } from '../../../src/domain/repositories/UsuarioRepository';
+import { CredencialRepository } from '../../../src/domain/repositories/CredencialRepository';
+import { IsValidName } from '../../../src/domain/usecases/IsValidName';
+import { IsValidEmail } from '../../../src/domain/usecases/IsValidEmail';
+import { IsValidDate } from '../../../src/domain/usecases/IsValidDate';
+import { IsValidPassword } from '../../../src/domain/usecases/IsValidPassword';
+import { AcceptTermsAndConditions } from '../../../src/domain/usecases/AcceptTermsAndConditions';
+import { CategorizeUser } from '../../../src/domain/usecases/CategorizeUser';
+import { RegistrationError } from '../../../src/domain/entities/RegistrationError';
+import { PerfilUsuario } from '../../../src/domain/entities/PerfilUsuario';
 
 describe('CrearUsuario', () => {
     let crearUsuario: CreateUser;

@@ -9,7 +9,7 @@ import { IsValidEmail } from "./IsValidEmail";
 import { IsValidDate } from "./IsValidDate";
 import { IsValidPassword } from "./IsValidPassword";
 import { AcceptTermsAndConditions } from "./AcceptTermsAndConditions";
-import * as bcrypt from "bcrypt";
+
 
 export class CreateUser {
     constructor(
@@ -65,8 +65,8 @@ export class CreateUser {
         usuario.perfil = this.categorizeUser.ejecutar(usuario.fechaNacimiento);
 
         // Hashear la contraseña
-        const saltRounds = 10;
-        const contraseñaHash = await bcrypt.hash(contraseña, saltRounds);
+        // const saltRounds = 10;
+        // const contraseñaHash = await bcrypt.hash(contraseña, saltRounds);
 
         // Guardar el usuario
         await this.usuarioRepository.guardarUsuario(usuario);
@@ -75,7 +75,7 @@ export class CreateUser {
         const credencial = new Credencial(
             usuario.id,
             usuario.id,
-            contraseñaHash,
+            contraseña,
             new Date()
         );
         await this.credencialRepository.guardarCredencial(credencial);
