@@ -10,7 +10,6 @@ import { IsValidDate } from "./IsValidDate";
 import { IsValidPassword } from "./IsValidPassword";
 import { AcceptTermsAndConditions } from "./AcceptTermsAndConditions";
 
-
 export class CreateUser {
     constructor(
         private usuarioRepository: UsuarioRepository,
@@ -24,60 +23,67 @@ export class CreateUser {
     ) {}
 
     async ejecutar(usuario: Usuario, contraseña: string, confirmarContraseña: string, aceptoTerminos: boolean): Promise<void> {
-        // Validar nombres y apellidos
-        if (!this.isValidName.ejecutar(usuario.primerNombre)) {
-            throw new Error(RegistrationError.INVALID_NAME);
+        try {
+            // ✅ Validar nombres y apellidos
+            if (!this.isValidName.ejecutar(usuario.primerNombre)) {
+                throw RegistrationError.INVALID_NAME;
+            }
+            if (usuario.segundoNombre && !this.isValidName.ejecutar(usuario.segundoNombre)) {
+                throw RegistrationError.INVALID_NAME;
+            }
+            if (!this.isValidName.ejecutar(usuario.primerApellido)) {
+                throw RegistrationError.INVALID_NAME;
+            }
+            if (usuario.segundoApellido && !this.isValidName.ejecutar(usuario.segundoApellido)) {
+                throw RegistrationError.INVALID_NAME;
+            }
+
+            // ✅ Validar correo electrónico
+            if (!this.isValidEmail.ejecutar(usuario.email)) {
+                throw RegistrationError.INVALID_EMAIL;
+            }
+
+            // ✅ Verificar si el correo ya está registrado
+            const usuarioExistente = await this.usuarioRepository.obtenerUsuarioPorCorreo(usuario.email);
+            if (usuarioExistente) {
+                throw RegistrationError.EMAIL_ALREADY_REGISTERED;
+            }
+
+            // ✅ Validar fecha de nacimiento (si existe)
+            if (usuario.fechaNacimiento && !this.isValidDate.ejecutar(usuario.fechaNacimiento)) {
+                throw RegistrationError.INVALID_DATE;
+            }
+
+            // ✅ Validar contraseña
+            if (!this.isValidPassword.ejecutar(contraseña)) {
+                throw RegistrationError.INVALID_PASSWORD;
+            }
+            if (contraseña !== confirmarContraseña) {
+                throw RegistrationError.PASSWORDS_DO_NOT_MATCH;
+            }
+
+            // ✅ Validar términos y condiciones
+            if (!this.acceptTermsAndConditions.ejecutar(aceptoTerminos)) {
+                throw RegistrationError.TERMS_NOT_ACCEPTED;
+            }
+
+            // ✅ Categorizar usuario
+            usuario.perfil = this.categorizeUser.ejecutar(usuario.fechaNacimiento);
+
+            // ✅ Hashear contraseña (Si decides usar `bcrypt`, dime y lo agregamos)
+            // const saltRounds = 10;
+            // const contraseñaHash = await bcrypt.hash(contraseña, saltRounds);
+
+            // ✅ Guardar usuario en el repositorio
+            await this.usuarioRepository.guardarUsuario(usuario);
+
+            // ✅ Guardar credencial en el repositorio
+            const credencial = new Credencial(usuario.id, usuario.id, contraseña, new Date());
+            await this.credencialRepository.guardarCredencial(credencial);
+
+        } catch (error) {
+            console.error("Error al registrar usuario:", error);
+            throw error;
         }
-        if (usuario.segundoNombre && !this.isValidName.ejecutar(usuario.segundoNombre)) {
-            throw new Error(RegistrationError.INVALID_NAME);
-        }
-        if (!this.isValidName.ejecutar(usuario.primerApellido)) {
-            throw new Error(RegistrationError.INVALID_NAME);
-        }
-        if (usuario.segundoApellido && !this.isValidName.ejecutar(usuario.segundoApellido)) {
-            throw new Error(RegistrationError.INVALID_NAME);
-        }
-
-        // Validar correo electrónico
-        this.isValidEmail.ejecutar(usuario.correoElectronico);
-
-        // Verificar si el correo ya está registrado
-        const usuarioExistente = await this.usuarioRepository.obtenerUsuarioPorCorreo(usuario.correoElectronico);
-        if (usuarioExistente) {
-            throw new Error(RegistrationError.EMAIL_ALREADY_REGISTERED);
-        }
-
-        // Validar fecha de nacimiento
-        if (usuario.fechaNacimiento) {
-            this.isValidDate.ejecutar(usuario.fechaNacimiento);
-        }
-
-        // Validar contraseña
-        this.isValidPassword.ejecutar(contraseña);
-        if (contraseña !== confirmarContraseña) {
-            throw new Error(RegistrationError.PASSWORDS_DO_NOT_MATCH);
-        }
-
-        // Validar términos y condiciones
-        this.acceptTermsAndConditions.ejecutar(aceptoTerminos);
-
-        // Categorizar al usuario
-        usuario.perfil = this.categorizeUser.ejecutar(usuario.fechaNacimiento);
-
-        // Hashear la contraseña
-        // const saltRounds = 10;
-        // const contraseñaHash = await bcrypt.hash(contraseña, saltRounds);
-
-        // Guardar el usuario
-        await this.usuarioRepository.guardarUsuario(usuario);
-
-        // Guardar la credencial
-        const credencial = new Credencial(
-            usuario.id,
-            usuario.id,
-            contraseña,
-            new Date()
-        );
-        await this.credencialRepository.guardarCredencial(credencial);
     }
 }

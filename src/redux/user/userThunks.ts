@@ -5,13 +5,13 @@ import { useCases } from "../../di/dependencyProvider"; // Importamos las depend
 // ✅ Registro de usuario
 export const registerUser = createAsyncThunk<
     Usuario,
-    { usuario: Usuario; contraseña: string; confirmarContraseña: string; aceptoTerminos: boolean },
+    { usuario: Usuario; password: string; confirmPassword: string; acceptTerms: boolean },
     { rejectValue: string }
 >(
     "user/registerUser",
-    async ({ usuario, contraseña, confirmarContraseña, aceptoTerminos }, { rejectWithValue }) => {
+    async ({ usuario, password, confirmPassword, acceptTerms }, { rejectWithValue }) => {
         try {
-            await useCases.createUser.ejecutar(usuario, contraseña, confirmarContraseña, aceptoTerminos);
+            await useCases.createUser.ejecutar(usuario, password, confirmPassword, acceptTerms);
             return usuario;
         } catch (error: any) {
             return rejectWithValue(error.message);

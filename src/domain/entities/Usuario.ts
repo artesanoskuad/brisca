@@ -9,7 +9,7 @@ export class Usuario {
         public segundoApellido: string | null,
         public fechaNacimiento: Date | null,
         public sexo: string | null,
-        public correoElectronico: string,
+        public email: string,
         public fechaAceptacionTerminos: Date,
         public perfil: PerfilUsuario
     ) {}

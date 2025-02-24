@@ -8,7 +8,7 @@ export interface UserState {
     segundoApellido?: string | null;
     fechaNacimiento?: Date | null;
     sexo?: string | null;
-    correoElectronico: string;
+    email: string;
     perfil: PerfilUsuario | null;
     loading: boolean;
     error: string | null;
