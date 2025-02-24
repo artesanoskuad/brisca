@@ -20,7 +20,7 @@ export class LoginWithEmail {
       if (error instanceof LoginLockedException) {
         return left(error);
       }
-      return left(new Error("Credenciales inválidas o error en el servidor"));
+      return left(new Error("Credenciales inválidas o error en el servidor " + password));
     }
   }
 }

@@ -3,18 +3,13 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { User } from '../../domain/entities/User';
 import { HardwareSupport } from '../../domain/entities/HardwareSupport';
 import { LoginLockedException } from '../../domain/exceptions/LoginLockedException';
-import { LoginWithEmail } from '../../domain/usecases/LoginWithEmail';
 import { LoginWithFingerprint } from '../../domain/usecases/LoginWithFingerprint';
 import { LoginWithFace } from '../../domain/usecases/LoginWithFace';
+import { LoginFactory } from '../../di/LoginFactory';
 
 // Para este ejemplo, usamos implementaciones dummy para los datasources.
 // En producción, inyecta las implementaciones reales o utiliza una factory.
-const loginWithEmailUseCase = new LoginWithEmail({
-  login: async (email: string, password: string) => {
-    // Simula un login exitoso con email.
-    return new User("1", "Usuario Email", email);
-  },
-});
+const loginWithEmailUseCase = LoginFactory.createLoginWithEmail();
 
 const loginWithFingerprintUseCase = new LoginWithFingerprint({
   login: async () => {

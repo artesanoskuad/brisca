@@ -1,13 +1,12 @@
 // src/screens/LoginScreen.tsx
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, ActivityIndicator } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { loginWithEmailThunk, loginWithFingerprintThunk, loginWithFaceThunk } from '../redux/login/loginSlice';
 import type { RootState, AppDispatch } from '../redux/store';
 import { useRouter } from 'expo-router';
 
 const LoginScreen = () => {
-  // Usamos nuestro dispatch tipado
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
@@ -17,13 +16,21 @@ const LoginScreen = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [mounted, setMounted] = useState(false);
 
-  // Si el login es exitoso, navegamos a /home.
   useEffect(() => {
-    if (user) {
-      router.push('/home');
+    setMounted(true);
+  }, []);
+
+  // Al detectar que el login es exitoso y que el componente ya está montado,
+  // retrasamos la navegación un poco para asegurar que el Root Layout esté listo.
+  useEffect(() => {
+    if (mounted && user) {
+      setTimeout(() => {
+        router.push('/home');
+      }, 100); // 100 ms de retardo (puedes ajustar este valor si es necesario)
     }
-  }, [user, router]);
+  }, [mounted, user, router]);
 
   const handleEmailLogin = () => {
     dispatch(loginWithEmailThunk({ email, password }));
