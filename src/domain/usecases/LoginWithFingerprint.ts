@@ -20,7 +20,7 @@ export class LoginWithFingerprint {
       if (error instanceof LoginLockedException) {
         return left(error);
       }
-      return left(new Error("Error al iniciar sesión con huella"));
+      return left(new Error(`Error al iniciar sesión con huella: ${error.message}`));
     }
   }
 }
