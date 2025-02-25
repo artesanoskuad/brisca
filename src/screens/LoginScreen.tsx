@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginWithEmailThunk, loginWithFingerprintThunk, loginWithFaceThunk } from '../redux/login/loginSlice';
+import { loginWithEmailThunk, loginWithFingerprintThunk, loginWithFaceThunk, fetchHardwareSupportThunk } from '../redux/login/loginSlice';
 import type { RootState, AppDispatch } from '../redux/store';
 import { useRouter } from 'expo-router';
 
@@ -21,6 +21,10 @@ const LoginScreen = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    dispatch(fetchHardwareSupportThunk());
+  }, [dispatch]);
 
   // Al detectar que el login es exitoso y que el componente ya está montado,
   // retrasamos la navegación un poco para asegurar que el Root Layout esté listo.
@@ -77,9 +81,13 @@ const LoginScreen = () => {
       {hardwareSupport?.fingerprintAvailable && (
         <Button title="Login con Huella" onPress={handleFingerprintLogin} />
       )}
+      {hardwareSupport && !hardwareSupport.fingerprintAvailable && (
+        <Text>Tu dispositivo no soporta autenticación por huella.</Text>
+      )}
       {hardwareSupport?.faceAvailable && (
         <Button title="Login con Face" onPress={handleFaceLogin} />
       )}
+
     </View>
   );
 };

@@ -6,17 +6,16 @@ import { LoginLockedException } from '../../domain/exceptions/LoginLockedExcepti
 import { LoginWithFingerprint } from '../../domain/usecases/LoginWithFingerprint';
 import { LoginWithFace } from '../../domain/usecases/LoginWithFace';
 import { LoginFactory } from '../../di/LoginFactory';
+import { RealFingerprintDatasource } from '../../data/datasources/RealFingerprintDatasource';
+import { ObtainHardwareSupport } from '../../domain/usecases/ObtainHardwareSupport';
+import { RealHardwareSupportDatasource } from '../../data/datasources/RealHardwareSupportDatasource';
+
 
 // Para este ejemplo, usamos implementaciones dummy para los datasources.
 // En producción, inyecta las implementaciones reales o utiliza una factory.
 const loginWithEmailUseCase = LoginFactory.createLoginWithEmail();
 
-const loginWithFingerprintUseCase = new LoginWithFingerprint({
-  login: async () => {
-    // Simula un login exitoso con huella.
-    return new User("2", "Usuario Huella", "huella@example.com");
-  },
-});
+const loginWithFingerprintUseCase = LoginFactory.createLoginWithFingerprint()
 
 const loginWithFaceUseCase = new LoginWithFace({
   login: async () => {
@@ -114,6 +113,21 @@ export const loginWithFaceThunk = createAsyncThunk<
   }
 });
 
+// Thunk para obtener el soporte de hardware biométrico.
+export const fetchHardwareSupportThunk = createAsyncThunk<
+  HardwareSupport,
+  void,
+  { rejectValue: string }
+>('login/fetchHardwareSupport', async (_, thunkAPI) => {
+  try {
+    const obtainSupportUseCase = new ObtainHardwareSupport(new RealHardwareSupportDatasource());
+    const support = await obtainSupportUseCase.execute();
+    return support;
+  } catch (e: any) {
+    return thunkAPI.rejectWithValue(e.message || 'Error obteniendo soporte de hardware');
+  }
+});
+
 const loginSlice = createSlice({
   name: 'login',
   initialState,
@@ -123,10 +137,8 @@ const loginSlice = createSlice({
       state.user = undefined;
       state.error = undefined;
       state.lockRemainingSeconds = undefined;
-    },
-    setHardwareSupport(state, action) {
-      state.hardwareSupport = action.payload;
-    },
+      state.hardwareSupport = undefined;
+    }
   },
   extraReducers: builder => {
     // Caso de login con Email
@@ -171,6 +183,12 @@ const loginSlice = createSlice({
       });
     // Caso de login con Face
     builder
+      .addCase(fetchHardwareSupportThunk.fulfilled, (state, action) => {
+        state.hardwareSupport = action.payload;
+      })
+      .addCase(fetchHardwareSupportThunk.rejected, (state, action) => {
+        state.hardwareSupport = undefined;
+      })
       .addCase(loginWithFaceThunk.pending, state => {
         state.loading = true;
         state.error = undefined;
@@ -192,5 +210,5 @@ const loginSlice = createSlice({
   },
 });
 
-export const { resetLoginState, setHardwareSupport } = loginSlice.actions;
+export const { resetLoginState } = loginSlice.actions;
 export default loginSlice.reducer;
